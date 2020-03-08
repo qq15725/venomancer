@@ -19,7 +19,11 @@
     "url": "https://github.com/qq15725/venomancer/issues"
   },
   "homepage": "https://github.com/qq15725/venomancer",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "puppeteer-core": "^2.1.1"
-  }
+  },
+  "gitHead": "134795ffa5738a67f88c6c7d47faedac16d53822"
 }
