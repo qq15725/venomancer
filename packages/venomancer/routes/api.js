@@ -1,9 +1,16 @@
-const ScreenshotController = require('../controller/screenshot')
-const ContentController = require('../controller/content')
+'use strict'
 
 module.exports = router => {
-  router.get('/content', ContentController.get)
-  router.post('/content', ContentController.post)
-  router.get('/screenshot', ScreenshotController.get)
-  router.post('/screenshot', ScreenshotController.post)
+  const path = require('path')
+  const fs = require('fs')
+  const curPath = path.resolve(__dirname, '../controller')
+
+  fs.readdirSync(curPath).forEach(item => {
+    const controller = require(`${curPath}/${item}`)
+    Object.keys(controller).forEach(method => {
+      if (['get', 'post'].includes(method)) {
+        router[method](`/${item.replace('.js', '')}`, controller[method])
+      }
+    })
+  })
 }

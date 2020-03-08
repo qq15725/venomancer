@@ -10,7 +10,7 @@ const {
   port = 8888,
   env = 'development',
   debug,
-  chromium
+  print
 } = parseArg()
 
 process.env.PORT = port
@@ -23,6 +23,6 @@ if (debug !== undefined) {
 
 const Application = require('../lib/Application')
 
-if (chromium !== undefined) return Application.printChromium()
+if (print === 'chromium') return Application.printChromium()
 
 new Application(parseConfig()).listen(process.env.PORT || 8888)

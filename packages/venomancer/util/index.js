@@ -1,16 +1,15 @@
 'use strict'
 
 exports.parseArg = () => process.argv.reduce((args, item) => {
-  if (!/^--[a-zA-Z0-9]+(=.*?){0,1}$/.test(item)) return args
+  if (!/^--[a-zA-Z0-9]+=.+?$/.test(item)) return args
   let [key, value] = item.split('=')
-  args[key.slice(2)] = value === undefined ? null : value
+  args[key.slice(2)] = value
   return args
 }, {})
 
 exports.parseConfig = () => {
-  const configPath = require('path').resolve(process.cwd(), 'headless-chrome.config.js')
-  const config = require('fs').existsSync(configPath) ? require(configPath) : {}
-  return require('extend')(require('../config'), config)
+  const configPath = require('path').resolve(process.cwd(), 'venomancer.config.js')
+  return require('extend')(require('../config'), require('fs').existsSync(configPath) ? require(configPath) : {})
 }
 
 exports.getNestedValue = (obj, path, fallback) => {
