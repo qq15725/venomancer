@@ -3,7 +3,7 @@
 const puppeteer = require('puppeteer-core')
 const { LifecycleWatcher } = require('puppeteer-core/lib/LifecycleWatcher')
 
-module.exports = class HeadlessChrome {
+class HeadlessChrome {
   constructor (app) {
     this._app = app
   }
@@ -172,3 +172,5 @@ module.exports = class HeadlessChrome {
     return promise
   }
 }
+
+module.exports = HeadlessChrome

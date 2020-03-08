@@ -2,7 +2,7 @@
 
 const { getObjectValueByPath, setObjectValueByPath } = require('../util')
 
-module.exports = class {
+class Store {
   constructor () {
     this._data = {}
   }
@@ -15,3 +15,5 @@ module.exports = class {
     setObjectValueByPath(this._data, key, value)
   }
 }
+
+module.exports = Store

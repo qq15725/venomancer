@@ -2,6 +2,7 @@
   "name": "venomancer",
   "version": "0.0.4",
   "description": "NodeJs server",
+  "main": "index.js",
   "bin": {
     "venomancer": "bin/venomancer.js"
   },

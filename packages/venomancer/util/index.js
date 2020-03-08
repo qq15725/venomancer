@@ -1,17 +1,5 @@
 'use strict'
 
-exports.parseArg = () => process.argv.reduce((args, item) => {
-  if (!/^--[a-zA-Z0-9]+=.+?$/.test(item)) return args
-  let [key, value] = item.split('=')
-  args[key.slice(2)] = value
-  return args
-}, {})
-
-exports.parseConfig = () => {
-  const configPath = require('path').resolve(process.cwd(), 'venomancer.config.js')
-  return require('extend')(require('../config'), require('fs').existsSync(configPath) ? require(configPath) : {})
-}
-
 exports.getNestedValue = (obj, path, fallback) => {
   const last = path.length - 1
   if (last < 0) return obj === undefined ? fallback : obj

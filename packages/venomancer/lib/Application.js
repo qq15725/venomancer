@@ -1,13 +1,12 @@
 'use strict'
 
-const Store = require('./Store')
-const Middles = require('../middleware/')
-const Koa = require('koa')
-
 const { getObjectValueByPath } = require('../util')
 
-module.exports = class {
+class Application {
   constructor (options) {
+    const Store = require('./Store')
+    const Koa = require('koa')
+
     this._options = options
     this._store = new Store()
     this._server = new Koa()
@@ -39,12 +38,28 @@ module.exports = class {
   }
 
   setupDefaultMiddleware () {
+    const Middles = require('../middleware/')
     // bodyParser
     this.use(Middles.bodyparser(this))
     // HeadlessChrome
     this.use(Middles.headlessChrome(this))
     // Router
     this.use(Middles.router(this))
+  }
+
+  static parseConfig () {
+    require('dotenv').config()
+    const configPath = require('path').resolve(process.cwd(), 'venomancer.config.js')
+    return require('extend')(require('../config'), require('fs').existsSync(configPath) ? require(configPath) : {})
+  }
+
+  static parseArg () {
+    return process.argv.reduce((args, item) => {
+      if (!/^--[a-zA-Z0-9]+=.+?$/.test(item)) return args
+      let [key, value] = item.split('=')
+      args[key.slice(2)] = value
+      return args
+    }, {})
   }
 
   static printChromium () {
@@ -56,3 +71,5 @@ module.exports = class {
     )
   }
 }
+
+module.exports = Application

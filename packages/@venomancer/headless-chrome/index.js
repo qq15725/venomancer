@@ -1,8 +1,8 @@
 'use strict'
 
-const HeadlessChrome = require('./lib/HeadlessChrome')
-
 module.exports = app => {
+  const HeadlessChrome = require('./lib/HeadlessChrome')
+
   const headlessChrome = new HeadlessChrome(app)
 
   headlessChrome.launch()
