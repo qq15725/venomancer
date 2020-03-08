@@ -1,0 +1,7 @@
+{
+  "packages": [
+    "packages/*",
+    "packages/@venomancer/*"
+  ],
+  "version": "0.0.0"
+}

@@ -1,0 +1,25 @@
+{
+  "name": "@venomancer/headless-chrome",
+  "version": "0.0.1",
+  "description": "Venomancer middleware based on puppeteer",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qq15725/venomancer.git",
+    "directory": "packages/@venomancer/headless-chrome"
+  },
+  "keywords": [
+    "venomancer",
+    "puppeteer",
+    "middleware"
+  ],
+  "author": "weng",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/qq15725/venomancer/issues"
+  },
+  "homepage": "https://github.com/qq15725/venomancer",
+  "dependencies": {
+    "puppeteer-core": "^2.1.1"
+  }
+}
