@@ -1,5 +1,20 @@
 # venomancer
 
+<p>
+  <a href="https://www.npmjs.com/package/venomancer" target="_blank">
+    <img alt="Version" src="https://img.shields.io/npm/v/venomancer.svg">
+  </a>
+  <a href="https://github.com/qq15725/venomancer" target="_blank">
+    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
+  </a>
+  <a href="https://github.com/qq15725/venomancer/graphs/commit-activity" target="_blank">
+    <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
+  </a>
+  <a href="https://github.com/qq15725/venomancer/blob/master/LICENSE" target="_blank">
+    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+  </a>
+</p>
+
 ## 快速开始
 
 全局安装
