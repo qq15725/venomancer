@@ -101,7 +101,9 @@ class HeadlessChrome {
     const {
       viewport,
       device,
-      autoScroll,
+      scroll,
+      scrollDistance,
+      scrollInterval,
       $,
       ...options
     } = opts
@@ -112,7 +114,7 @@ class HeadlessChrome {
     } else {
       await this.setContent(page, content)
     }
-    if (autoScroll) await this.autoScroll(page)
+    if (scroll) await this.scroll(page, scrollDistance || 100, scrollInterval || 0)
     const el = ($ ? (await page.$($)) : null) || page
     const image = await el.screenshot(options)
     this.resetPage(browser, page, pages)
@@ -124,21 +126,23 @@ class HeadlessChrome {
     pages.push((await browser.newPage()).target()._targetId)
   }
 
-  async autoScroll (page) {
-    return await page.evaluate(async () => {
+  async scroll (page, distance, interval) {
+    return await page.evaluate(async ({ distance, interval }) => {
       await new Promise(resolve => {
-        let totalHeight = 0
-        let distance = 100
+        let scrollHeight = Math.min(document.body.scrollHeight, 5000)
+        let totalHeight = scrollHeight - document.body.offsetHeight
         let timer = setInterval(() => {
-          let scrollHeight = Math.min(document.body.scrollHeight, 5000)
           window.scrollBy(0, distance)
           totalHeight += distance
           if (totalHeight >= scrollHeight) {
             clearInterval(timer)
             resolve()
           }
-        }, 100)
+        }, interval)
       })
+    }, {
+      distance,
+      interval
     })
   }
 
