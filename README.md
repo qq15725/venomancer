@@ -1,9 +1,27 @@
 # venomancer
 
+<p>
+  <a href="https://github.com/qq15725/venomancer" target="_blank">
+    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
+  </a>
+  <a href="https://github.com/qq15725/venomancer/graphs/commit-activity" target="_blank">
+    <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
+  </a>
+  <a href="https://github.com/qq15725/venomancer/blob/master/LICENSE" target="_blank">
+    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+  </a>
+</p>
+
 - php 版
 - javascript 版
 
 ## php 版
+
+<p>
+  <a href="https://github.com/qq15725/venomancer" target="_blank">
+    <img alt="Documentation" src="https://img.shields.io/packagist/php-v/wxm/venomancer.svg" />
+  </a>
+</p>
 
 安装
 
@@ -48,15 +66,6 @@ file_put_contents('./baidu.png', $image);
 <p>
   <a href="https://www.npmjs.com/package/venomancer" target="_blank">
     <img alt="Version" src="https://img.shields.io/npm/v/venomancer.svg">
-  </a>
-  <a href="https://github.com/qq15725/venomancer" target="_blank">
-    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
-  </a>
-  <a href="https://github.com/qq15725/venomancer/graphs/commit-activity" target="_blank">
-    <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
-  </a>
-  <a href="https://github.com/qq15725/venomancer/blob/master/LICENSE" target="_blank">
-    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
   </a>
 </p>
 
