@@ -2,14 +2,18 @@
 
 const path = require('path')
 
-const getDefaultOsPath = () => {
-  if (process.env.CHROME_EXECUTABLE_PATH) return path.resolve(__dirname, '..', process.env.CHROME_EXECUTABLE_PATH)
-  if (process.platform === 'win32') return 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'
-  return '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+const getDefaultExecutablePath = () => {
+  if (process.platform === 'win32') {
+    return 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe'
+  } else if (process.platform === 'darwin') {
+    return '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+  } else {
+    return null
+  }
 }
 
 module.exports = {
-  HeadlessChrome: {
+  headlessChrome: {
     // 浏览器实例数量
     browsersCount: 1,
     // 浏览器实例重启时间（单位秒）
@@ -20,7 +24,7 @@ module.exports = {
     // puppeteer options
     // @see https://github.com/puppeteer/puppeteer/blob/master/docs/api.md#puppeteerlaunchoptions
     launchOptions: {
-      executablePath: getDefaultOsPath(),
+      executablePath: process.env.CHROMIUM_EXECUTABLE_PATH || getDefaultExecutablePath(),
       // 毫秒
       timeout: 30 * 1000,
       // 不使用默认选项

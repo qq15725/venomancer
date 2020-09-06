@@ -2,23 +2,20 @@
 
 'use strict'
 
+process.env.DEBUG = process.env.DEBUG || 'venomancer,puppeteer:launcher'
+
 const Application = require('../lib/Application')
 
-const {
-  port = 8888,
-  env = 'development',
-  debug,
-  print
-} = Application.parseArg()
+const { port } = Application.parseArgs()
 
-process.env.PORT = port
-process.env.NODE_ENV = env
-if (debug !== undefined) {
-  process.env.DEBUG = debug
-} else {
-  process.env.DEBUG = env === 'production' ? '' : '*'
+const config = Application.parseConfig()
+
+const app = new Application(config)
+
+const executablePath = app.config('headlessChrome.launchOptions.executablePath')
+
+if (!executablePath || !require('fs').existsSync(executablePath)) {
+  return Application.printDownloadChromium()
 }
 
-if (print === 'chromium') return Application.printChromium()
-
-new Application(Application.parseConfig()).listen(process.env.PORT || 8888)
+app.listen(process.env.PORT || port || 8888)

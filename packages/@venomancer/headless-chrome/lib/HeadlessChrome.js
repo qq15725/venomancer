@@ -19,7 +19,7 @@ class HeadlessChrome {
 
   async launch () {
     this.launchBrowsers()
-    this._refreshTimer = setTimeout(() => this.resetBrowsers, (this._app.option('HeadlessChrome.browserTTL') || 1800) * 1000)
+    this._refreshTimer = setTimeout(() => this.resetBrowsers, (this._app.config('headlessChrome.browserTTL') || 1800) * 1000)
   }
 
   async launchBrowsers () {
@@ -27,7 +27,7 @@ class HeadlessChrome {
       launchOptions = {},
       browsersCount = 1,
       presetPagesCount = 0,
-    } = this._app.option('HeadlessChrome')
+    } = this._app.config('headlessChrome')
 
     const browsers = this.browsers()
 
@@ -58,7 +58,7 @@ class HeadlessChrome {
       await this.closeBrowser(browsers.shift())
     }
     this.launchBrowsers()
-    this._refreshTimer = setTimeout(() => this.resetBrowsers, (this._app.option('HeadlessChrome.browserTTL') || 1800) * 1000)
+    this._refreshTimer = setTimeout(() => this.resetBrowsers, (this._app.config('headlessChrome.browserTTL') || 1800) * 1000)
   }
 
   async closeBrowser (_browser, retries = 2) {
