@@ -1,5 +1,50 @@
 # venomancer
 
+- php 版
+- javascript 版
+
+## php 版
+
+安装
+
+```bash
+composer require wxm/venomancer
+```
+
+例:
+
+server.php
+
+```php
+<?php
+
+require './vendor/autoload.php';
+
+$app = new \Wxm\Venomancer\Application();
+
+$app->server->serve();
+
+// php ./server.php
+```
+
+client.php
+
+```php
+<?php
+
+require './vendor/autoload.php';
+
+$app = new \Wxm\Venomancer\Application();
+
+$image = $app->screenshot('http://baidu.com');
+
+file_put_contents('./baidu.png', $image);
+
+// php ./client.php
+```
+
+## javascript 版
+
 <p>
   <a href="https://www.npmjs.com/package/venomancer" target="_blank">
     <img alt="Version" src="https://img.shields.io/npm/v/venomancer.svg">
@@ -15,50 +60,22 @@
   </a>
 </p>
 
-## 快速开始
+### 快速开始
 
-全局安装
 
 ```bash
+# 全局安装
 npm install venomancer -g
+
+# 启动服务
+venomancer --port=8888
+
+# 如果不存在 chromium 根据提示下载 chromium 然后编辑配置，没有提示则不用管这部分，然后再次执行启动服务
+vim .env
+CHROMIUM_EXECUTABLE_PATH=这里填可执行地址
 ```
 
-查看需要下载的 chromium 地址，下载并解压
-
-```bash
-venomancer --print=chromium
-```
-
-编辑配置
-
-```bash
-vim venomancer.config.js
-```
-
-```javascript
-'use strict'
-
-module.exports = {
-  HeadlessChrome: {
-    launchOptions: {
-      // chromium 路径
-      executablePath: '/data/venomancer/chrome-linux/chrome'
-    }
-  }
-}
-```
-
-启动服务
-
-```bash
-# 开发环境启动
-venomancer --port=8888 --debug="*,-nodemon*,-puppeteer:protocol*"
-
-# 线上环境启动
-venomancer --port=8888 --env=production
-```
-
-## API
+### API
 
 截图服务
 
