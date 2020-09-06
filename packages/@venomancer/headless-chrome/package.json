@@ -1,6 +1,6 @@
 {
   "name": "@venomancer/headless-chrome",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Venomancer middleware based on puppeteer",
   "main": "index.js",
   "repository": {
