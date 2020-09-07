@@ -1,11 +1,3 @@
-Node.js 下的 API 服务(可单独使用), 加 PHP 套件.
-
-- 基于 puppeteer 的 headless-chrome 能力封装及性能优化
-  - 支持 html 渲染生成图片
-  - 支持 url 访问生成图片
-  - TODO 其他 headless-chrome 能力
-- TODO 其他 API
-
 <p>
   <a href="https://github.com/qq15725/venomancer" target="_blank">
     <img alt="Node-Version" src="https://img.shields.io/node/v/venomancer" />
@@ -26,6 +18,14 @@ Node.js 下的 API 服务(可单独使用), 加 PHP 套件.
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
   </a>
 </p>
+
+Node.js 下的 API 服务(可单独使用), 加 PHP 套件.
+
+- 基于 puppeteer 的 headless-chrome 能力封装及性能优化
+  - 支持 html 渲染生成图片
+  - 支持 url 访问生成图片
+  - TODO 其他 headless-chrome 能力
+- TODO 其他 API
 
 ## 快速开始
 
