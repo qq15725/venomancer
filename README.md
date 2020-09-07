@@ -44,9 +44,9 @@ vim .env
 CHROMIUM_EXECUTABLE_PATH=这里填可执行地址
 ```
 
-#### API
+#### Node.js 服务下的 RESTful API 列表
 
-截图服务
+截图
 
 ```bash
 # GET/POST 都可
