@@ -1,6 +1,6 @@
 {
   "name": "venomancer",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "NodeJs server",
   "main": "index.js",
   "bin": {
@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/qq15725/venomancer",
   "dependencies": {
-    "@venomancer/headless-chrome": "^0.0.8",
+    "@venomancer/headless-chrome": "^0.1.0",
     "debug": "~3.1.0",
     "dotenv": "^8.2.0",
     "extend": "^3.0.2",
