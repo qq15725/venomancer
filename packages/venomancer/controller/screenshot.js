@@ -1,8 +1,17 @@
 'use strict'
 
 const handle = async (ctx, content, opts) => {
-    ctx.type = 'image/png'
-    ctx.body = await ctx.headlessChrome.screenshot(content, opts)
+    try {
+        ctx.body = await ctx.headlessChrome.screenshot(content, opts)
+        ctx.type = 'image/png'
+    } catch (e) {
+        ctx.status = 500
+        ctx.body = {
+            code: 500,
+            errors: e.stack,
+            message: e.message
+        }
+    }
 }
 
 exports.get = async ctx => {
