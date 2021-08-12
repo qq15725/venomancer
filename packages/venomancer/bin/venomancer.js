@@ -2,20 +2,15 @@
 
 'use strict'
 
-process.env.DEBUG = process.env.DEBUG || 'venomancer,puppeteer:launcher'
+process.env.DEBUG = process.env.DEBUG || '*'
 
-const Application = require('../lib/Application')
+const {
+  getDownloadTip,
+  existsExecutablePath
+} = require('@venomancer/browser/utils')
 
-const { port } = Application.parseArgs()
-
-const config = Application.parseConfig()
-
-const app = new Application(config)
-
-const executablePath = app.config('headlessChrome.launchOptions.executablePath')
-
-if (!executablePath || !require('fs').existsSync(executablePath)) {
-  return Application.printDownloadChromium()
+if (!existsExecutablePath()) {
+  return console.error(getDownloadTip())
 }
 
-app.listen(process.env.PORT || port || 8888)
+require('../bootstrap').run()

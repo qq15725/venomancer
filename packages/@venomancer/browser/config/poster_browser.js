@@ -17,18 +17,6 @@ module.exports = {
     timeout: 30000,
     // 不使用默认选项
     ignoreDefaultArgs: true,
-    dumpio: false,
-    pipe: false,
-    env: process.env,
-    handleSIGINT: true,
-    handleSIGTERM: true,
-    handleSIGHUP: true,
-    ignoreHTTPSErrors: false,
-    defaultViewport: {
-      width: 800,
-      height: 600
-    },
-    slowMo: 0,
     // https://peter.sh/experiments/chromium-command-line-switches
     args: [
       ...defaultArgs,

@@ -7,7 +7,7 @@ use Symfony\Component\Process\Process;
 class Server
 {
     /**
-     * @var Container
+     * @var Application
      */
     protected $app;
 
@@ -48,9 +48,9 @@ class Server
     /**
      * Server constructor.
      *
-     * @param Container $app
+     * @param Application $app
      */
-    public function __construct(Container $app)
+    public function __construct(Application $app)
     {
         $this->app = $app;
 

@@ -21,7 +21,8 @@
         "pimple/pimple": "^3.0",
         "monolog/monolog": "^1.22 || ^2.0",
         "symfony/http-foundation": "^2.7 || ^3.0 || ^4.0 || ^5.0",
-        "symfony/process" : "^2.3|^3.0|^4.0|^5.0"
+        "symfony/process" : "^2.3|^3.0|^4.0|^5.0",
+        "wxm/sdk-kernel": "v1.2.2"
     },
     "autoload": {
         "psr-4": {

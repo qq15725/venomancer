@@ -1,109 +1,141 @@
 'use strict'
 
 const debug = require('debug')('venomancer:browser')
-const debugPage = require('debug')('venomancer:page')
 
 const puppeteer = require('puppeteer-core')
-const { setupPageSpider } = require('./utils/page')
+const objectExtend = require('extend')
+
+const { setupPageStealth } = require('./page/crawl')
 
 module.exports = class Browser {
-  constructor (app) {
-    this.app = app
-    this.browser = null
+  /**
+   * @param config
+   */
+  constructor (config = {}) {
+    let defaultConfig
+    if (config.type === 'poster') {
+      defaultConfig = require('./config/poster_browser')
+    } else {
+      defaultConfig = require('./config')
+    }
+
+    this.config = objectExtend(config, defaultConfig)
+
     this.wsEndpoint = null
+
+    if (this.config.relaunchInterval) {
+      setInterval(
+        () => this.relaunch(),
+        this.config.relaunchInterval * 1000
+      )
+    }
   }
 
-  get config () {
-    return require('./config/config')
-  }
-
+  /**
+   * 启动浏览器
+   *
+   * @returns {Promise<Browser>}
+   */
   async launch () {
-    this.timer && clearTimeout(this.timer)
+    if (this.wsEndpoint) {
+      return this
+    }
 
-    if (this.browser) {
+    const browser = await puppeteer.launch(this.config.options)
+
+    if (this.wsEndpoint) {
+      await browser.close()
+      return this
+    }
+
+    this.wsEndpoint = browser.wsEndpoint()
+
+    await this.registerEventBindings(browser)
+
+    let pages = await browser.pages()
+
+    for (let i = 0; i < pages.length; i++) {
+      await this.registerPageEventBindings(pages[i])
+    }
+
+    for (let ix = 0; ix < this.config.presetPagesCount - 1; ix++) {
+      await browser.newPage()
+    }
+
+    await browser.disconnect()
+
+    return this
+  }
+
+  /**
+   * 重启浏览器
+   *
+   * @returns {Promise<Browser>}
+   */
+  async relaunch () {
+    debug('relaunch [%s]', this.wsEndpoint)
+
+    if (this.wsEndpoint) {
       await this.close()
     }
 
-    this.browser = await puppeteer.launch(this.config.options)
+    await this.launch()
 
-    this.wsEndpoint = this.browser.wsEndpoint()
-
-    this.registerEventBindings()
-
-    this.timer = setTimeout(
-      this.launch,
-      this.config.browserTTL * 1000
-    )
+    return this
   }
 
-  async registerEventBindings () {
-    await this.browser.on('disconnected', async () => {
-      debug('disconnected [%s]', this.wsEndpoint)
+  /**
+   * 链接浏览器实例
+   *
+   * @returns {Promise<*>}
+   */
+  async connection () {
+    const browser = await puppeteer.connect({
+      browserWSEndpoint: this.wsEndpoint
     })
 
-    await this.browser.on('targetcreated', async (target) => {
-      debug('targetcreated [%s]', this.wsEndpoint)
+    await this.registerEventBindings(browser)
+
+    return browser
+  }
+
+  /**
+   * 关闭浏览器
+   *
+   * @returns {Promise<boolean>}
+   */
+  async close () {
+    if (this.wsEndpoint) {
+      const browser = await this.connection()
+
+      await browser.close()
+
+      this.wsEndpoint = null
+    }
+
+    return true
+  }
+
+  async registerEventBindings (browser) {
+    await browser.on('targetcreated', async (target) => {
       const page = await target.page()
       if (page) {
         await this.registerPageEventBindings(await target.page())
       }
     })
-
-    await this.browser.on('targetchanged', async (target) => {
-      debug('targetchanged [%s]', this.wsEndpoint)
-    })
-
-    await this.browser.on('targetdestroyed', async (target) => {
-      debug('targetdestroyed [%s]', this.wsEndpoint)
-    })
-
-    let pages = await this.browser.pages()
-
-    pages.forEach(async page => {
-      await this.registerPageEventBindings(page)
-    })
-
-    for (let ix = 0; ix < this.config.browserPresetPagesCount - 1; ix++) {
-      await this.browser.newPage()
-    }
-
-    debug('event binded [%s]', this.wsEndpoint)
   }
 
   async registerPageEventBindings (page) {
-    await page.on('close', async () => {
-      debugPage('closed [%s]', page.target()._targetId)
-    })
-
     await page.on('domcontentloaded', async () => {
-      // if (this.config.spider) {
-      //   await setupPageSpider(page)
-      // }
-
-      debugPage('domcontentloaded [%s] %s', page.target()._targetId, page.url())
+      if (this.config.stealth) {
+        await setupPageStealth(page)
+      }
     })
-
-    await page.on('load', async () => {
-      debugPage('loaded [%s]', page.target()._targetId)
-    })
-
-    debugPage('event binded [%s]', page.target()._targetId)
   }
 
-  async close (retries = 2) {
-    const pages = await this.browser.pages()
+  async getRandomPage () {
+    const browser = await this.connection()
 
-    if (pages && pages.length > 1 && retries > 0) {
-      return setTimeout(
-        () => this.close(--retries),
-        60 * 1000
-      )
-    }
-
-    return await this.browser.close()
-  }
-
-  async getRandomBrowser () {
-    return this.browser
+    return (await browser.pages())[0]
   }
 }
