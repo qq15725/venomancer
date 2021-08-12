@@ -49,7 +49,7 @@ CHROMIUM_EXECUTABLE_PATH=这里填可执行地址
 截图
 
 ```bash
-# GET/POST 都可
+# POST
 # content = url
 http://localhost:8888/screenshot?content=https://baidu.com&scroll=1&fullPage=1
 # content = html 
@@ -88,7 +88,7 @@ require './vendor/autoload.php';
 
 $app = new \Wxm\Venomancer\Application();
 
-$image = $app->screenshot('http://baidu.com');
+$image = $app->clinet->screenshot('http://baidu.com');
 
 file_put_contents('./baidu.png', $image);
 
