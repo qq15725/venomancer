@@ -1,0 +1,31 @@
+{
+  "name": "@venomancer/browser",
+  "version": "1.0.0",
+  "description": "Venomancer browser",
+  "main": "browser.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qq15725/venomancer.git",
+    "directory": "packages/@venomancer/browser"
+  },
+  "keywords": [
+    "venomancer",
+    "puppeteer",
+    "middleware"
+  ],
+  "author": "weng",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/qq15725/venomancer/issues"
+  },
+  "homepage": "https://github.com/qq15725/venomancer",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "debug": "~3.1.0",
+    "extend": "^3.0.2",
+    "puppeteer-core": "^2.1.1"
+  },
+  "gitHead": "95dfbff98b0bcf214f716560e8d5cf43e8c3c957"
+}

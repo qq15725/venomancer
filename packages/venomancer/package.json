@@ -1,13 +1,13 @@
 {
   "name": "venomancer",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "NodeJs server",
-  "main": "index.js",
+  "main": "bootstrap/index.js",
   "bin": {
     "venomancer": "bin/venomancer.js"
   },
   "scripts": {
-    "dev": "./node_modules/.bin/nodemon bin/venomancer.js --debug=*,-nodemon*,-puppeteer:protocol*",
+    "dev": "DEBUG=*,-nodemon*,-koa*,-puppeteer:protocol* ./node_modules/.bin/nodemon bin/venomancer.js",
     "start": "node bin/venomancer.js --env=production"
   },
   "repository": {
@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/qq15725/venomancer",
   "dependencies": {
-    "@venomancer/headless-chrome": "^0.1.0",
+    "@venomancer/browser": "^1.0.0",
     "debug": "~3.1.0",
     "dotenv": "^8.2.0",
     "extend": "^3.0.2",
