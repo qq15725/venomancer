@@ -3,7 +3,7 @@
 const path = require('path')
 const fs = require('fs')
 const objectExtend = require('extend')
-const { parseArg } = require('../util')
+const { parseArg, mergeDeep } = require('../util')
 const debug = require('debug')('venomancer:application')
 const error = require('debug')('venomancer:error')
 
@@ -36,6 +36,7 @@ module.exports = class Application extends Container {
    */
   registerConfigBinding () {
     const userConfigPath = path.resolve(process.cwd(), 'venomancer.config.js')
+
     let userConfig = {}
     if (fs.existsSync(userConfigPath)) {
       userConfig = require(userConfigPath)
@@ -48,9 +49,7 @@ module.exports = class Application extends Container {
       config[key] = require(filepath)
     })
 
-    config = objectExtend(config, userConfig)
-
-    this.set('config', new Config(config))
+    this.set('config', new Config(mergeDeep(config, userConfig)))
   }
 
   /**
@@ -107,6 +106,8 @@ module.exports = class Application extends Container {
    * run server
    */
   async run () {
+    debug(`venomancer version: ${require('../package.json').version}`)
+
     const koa = this.koa
 
     // catch error
@@ -147,14 +148,19 @@ module.exports = class Application extends Container {
 
     debug('http server listen port %s', server.address().port)
 
-    if (this.config.get('poster.autoLaunchPosterBrowser')) {
+    let posterConfig = this.config.get('poster', {})
+
+    if (posterConfig.autoLaunchPosterBrowser) {
       const Browser = require('@venomancer/browser')
-      const browser = new Browser(
-        objectExtend(
-          { type: 'poster', },
-          this.config.get('poster', {})
-        )
-      )
+      posterConfig = objectExtend({ type: 'poster', }, posterConfig)
+      if (this.config.get('executablePath')) {
+        posterConfig = mergeDeep(posterConfig, {
+          options: {
+            executablePath: this.config.get('executablePath')
+          },
+        })
+      }
+      const browser = new Browser(posterConfig)
       await browser.launch()
       this.set('poster_browser_id', this.browserPool.push(browser))
     }

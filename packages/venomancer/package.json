@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "DEBUG=*,-nodemon*,-koa*,-puppeteer:protocol* ./node_modules/.bin/nodemon bin/venomancer.js",
-    "start": "node bin/venomancer.js --env=production"
+    "start": "node bin/venomancer.js --debug=*,-nodemon*,-koa*,-puppeteer:protocol*"
   },
   "repository": {
     "type": "git",

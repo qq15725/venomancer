@@ -3,7 +3,7 @@
 const debug = require('debug')('venomancer:browser')
 
 const puppeteer = require('puppeteer-core')
-const objectExtend = require('extend')
+const { mergeDeep } = require('./utils')
 
 const { setupPageStealth } = require('./page/crawl')
 
@@ -19,7 +19,7 @@ module.exports = class Browser {
       defaultConfig = require('./config')
     }
 
-    this.config = objectExtend(config, defaultConfig)
+    this.config = mergeDeep(defaultConfig, config)
 
     this.wsEndpoint = null
 

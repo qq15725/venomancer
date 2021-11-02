@@ -2,15 +2,23 @@
 
 'use strict'
 
-process.env.DEBUG = process.env.DEBUG || '*'
+require('dotenv').config()
+
+const parseArg = require('../util').parseArg
+
+process.env.DEBUG = process.env.DEBUG
+  || parseArg('debug')
+  || '*'
+
+const app = require('../bootstrap')
 
 const {
   getDownloadTip,
   existsExecutablePath
 } = require('@venomancer/browser/utils')
 
-if (!existsExecutablePath()) {
+if (!existsExecutablePath(app.get('executablePath'))) {
   return console.error(getDownloadTip())
 }
 
-require('../bootstrap').run()
+app.run()

@@ -9,6 +9,40 @@ exports.sleep = function (ms) {
 }
 
 /**
+ * Simple object check.
+ *
+ * @param item
+ * @returns {boolean}
+ */
+exports.isObject = function (item) {
+  return (item && typeof item === 'object' && !Array.isArray(item))
+}
+
+/**
+ * Deep merge two objects.
+ * @param target
+ * @param sources
+ * @returns {*}
+ */
+exports.mergeDeep = function (target, ...sources) {
+  if (!sources.length) return target
+  const source = sources.shift()
+
+  if (exports.isObject(target) && exports.isObject(source)) {
+    for (const key in source) {
+      if (exports.isObject(source[key])) {
+        if (!target[key]) Object.assign(target, { [key]: {} })
+        exports.mergeDeep(target[key], source[key])
+      } else {
+        Object.assign(target, { [key]: source[key] })
+      }
+    }
+  }
+
+  return exports.mergeDeep(target, ...sources)
+}
+
+/**
  * 获取 chromium 可执行地址
  *
  * @returns {string|null}
@@ -30,8 +64,8 @@ exports.getExecutablePath = function () {
  *
  * @returns boolean
  */
-exports.existsExecutablePath = function () {
-  const executablePath = exports.getExecutablePath()
+exports.existsExecutablePath = function (executablePath = null) {
+  executablePath = executablePath || exports.getExecutablePath()
 
   return executablePath && require('fs').existsSync(executablePath)
 }

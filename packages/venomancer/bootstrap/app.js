@@ -1,7 +1,5 @@
 'use strict'
 
-require('dotenv').config()
-
 const Application = require('../core/application')
 
 // app

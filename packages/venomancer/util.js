@@ -41,6 +41,40 @@ exports.setObjectValueByPath = function (obj, path, value) {
   return exports.setNestedValue(obj, path.split('.'), value)
 }
 
+/**
+ * Simple object check.
+ *
+ * @param item
+ * @returns {boolean}
+ */
+exports.isObject = function (item) {
+  return (item && typeof item === 'object' && !Array.isArray(item))
+}
+
+/**
+ * Deep merge two objects.
+ * @param target
+ * @param sources
+ * @returns {*}
+ */
+exports.mergeDeep = function (target, ...sources) {
+  if (!sources.length) return target
+  const source = sources.shift()
+
+  if (exports.isObject(target) && exports.isObject(source)) {
+    for (const key in source) {
+      if (exports.isObject(source[key])) {
+        if (!target[key]) Object.assign(target, { [key]: {} })
+        exports.mergeDeep(target[key], source[key])
+      } else {
+        Object.assign(target, { [key]: source[key] })
+      }
+    }
+  }
+
+  return exports.mergeDeep(target, ...sources)
+}
+
 exports.parseArg = function (name) {
   const options = process.argv.reduce((items, item) => {
     if (!/^--[a-zA-Z0-9]+=.+?$/.test(item)) return items
