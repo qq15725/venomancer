@@ -17,7 +17,7 @@ const {
   existsExecutablePath
 } = require('@venomancer/browser/utils')
 
-if (!existsExecutablePath(app.get('executablePath'))) {
+if (!existsExecutablePath(app.config.get('executablePath'))) {
   return console.error(getDownloadTip())
 }
 
