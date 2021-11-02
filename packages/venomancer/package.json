@@ -1,6 +1,6 @@
 {
   "name": "venomancer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "NodeJs server",
   "main": "bootstrap/index.js",
   "bin": {
