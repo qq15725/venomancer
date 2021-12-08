@@ -1,7 +1,5 @@
 'use strict'
 
-const debug = require('debug')('venomancer:page-screenshot')
-
 const puppeteer = require('puppeteer-core')
 
 async function pageSetContent (page, content) {
@@ -16,7 +14,7 @@ async function pageSetContent (page, content) {
   const watcher = new LifecycleWatcher(
     page._frameManager,
     page._frameManager.mainFrame(),
-    ['load'],
+    ['networkidle0'],
     page._frameManager._timeoutSettings.navigationTimeout()
   )
 
@@ -98,19 +96,11 @@ async function pageScreenshot (page, options) {
   } = options || {}
 
   if (viewport) {
-    try {
-      await page.setViewport(viewport)
-    } catch (e) {
-      debug('page set viewport error: %s', e.message())
-    }
+    await page.setViewport(viewport)
   }
 
   if (device && puppeteer.devices[device]) {
-    try {
-      await page.emulate(puppeteer.devices[device])
-    } catch (e) {
-      debug('page emulate error: %s', e.message())
-    }
+    await page.emulate(puppeteer.devices[device])
   }
 
   if (/^http/.test(content)) {
@@ -123,24 +113,16 @@ async function pageScreenshot (page, options) {
   }
 
   if (scroll) {
-    try {
-      await pageScroll(
-        page,
-        scrollDistance || 100,
-        scrollInterval || 0
-      )
-    } catch (e) {
-      debug('page scroll error: %s', e.message())
-    }
+    await pageScroll(
+      page,
+      scrollDistance || 100,
+      scrollInterval || 0
+    )
   }
 
   let el = page
   if ($) {
-    try {
-      el = await page.$($)
-    } catch (e) {
-      debug('page $ error: %s', e.message())
-    }
+    el = await page.$($)
   }
 
   return await el.screenshot(screenshotOptions)

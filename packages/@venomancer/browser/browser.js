@@ -1,28 +1,56 @@
 'use strict'
 
+// Debug
 const debug = require('debug')('venomancer:browser')
 
+// Page
+const Page = require('./page')
+
+// Utils
 const puppeteer = require('puppeteer-core')
 const { mergeDeep } = require('./utils')
 
-const { setupPageStealth } = require('./page/crawl')
+function getConfig (type) {
+  switch (type) {
+    case 'poster':
+      return require('./config/poster_browser')
+    default:
+      return require('./config')
+  }
+}
 
 module.exports = class Browser {
   /**
-   * @param config
+   * 配置
    */
-  constructor (config = {}) {
-    let defaultConfig
-    if (config.type === 'poster') {
-      defaultConfig = require('./config/poster_browser')
-    } else {
-      defaultConfig = require('./config')
-    }
+  config = {}
 
-    this.config = mergeDeep(defaultConfig, config)
+  /**
+   * 状态
+   */
+  status = 'closed'
 
-    this.wsEndpoint = null
+  /**
+   * ws endpoint
+   */
+  wsEndpoint = null
 
+  /**
+   * 页面列表
+   */
+  pages = []
+
+  /**
+   *
+   * @type {null|!Puppeteer.Browser}
+   */
+  connection = null
+
+  /**
+   * @param options
+   */
+  constructor (options = {}) {
+    this.config = mergeDeep(getConfig(options.type), options)
     if (this.config.relaunchInterval) {
       setInterval(
         () => this.relaunch(),
@@ -37,34 +65,43 @@ module.exports = class Browser {
    * @returns {Promise<Browser>}
    */
   async launch () {
-    if (this.wsEndpoint) {
-      return this
-    }
-
-    const browser = await puppeteer.launch(this.config.options)
-
-    if (this.wsEndpoint) {
-      await browser.close()
-      return this
-    }
-
-    this.wsEndpoint = browser.wsEndpoint()
-
-    await this.registerEventBindings(browser)
-
-    let pages = await browser.pages()
-
-    for (let i = 0; i < pages.length; i++) {
-      await this.registerPageEventBindings(pages[i])
-    }
-
-    for (let ix = 0; ix < this.config.presetPagesCount - 1; ix++) {
-      await browser.newPage()
-    }
-
-    await browser.disconnect()
-
+    if (this.status !== 'closed') return this
+    this.status = 'launching'
+    const connection = await puppeteer.launch(this.config.options)
+    this.connection = connection
+    this.wsEndpoint = connection.wsEndpoint()
+    await this.setupPages()
+    this.status = 'launched'
     return this
+  }
+
+  /**
+   * 关闭浏览器
+   *
+   * @returns {Promise<boolean>}
+   */
+  async close () {
+    if (this.status !== 'launched') return false
+    this.status = 'closeing'
+    await (await this.getConnection()).close()
+    this.wsEndpoint = null
+    this.connection = null
+    this.status = 'closed'
+    return true
+  }
+
+  /**
+   * 设置页面
+   *
+   * @returns {Promise<void>}
+   */
+  async setupPages () {
+    this.pages = (await (await this.getConnection()).pages()).map(
+      connection => new Page(connection, this)
+    )
+    for (let ix = 0; ix < this.config.presetPagesCount - 1; ix++) {
+      this.newPage()
+    }
   }
 
   /**
@@ -74,68 +111,71 @@ module.exports = class Browser {
    */
   async relaunch () {
     debug('relaunch [%s]', this.wsEndpoint)
-
-    if (this.wsEndpoint) {
+    if (this.status === 'launched') {
       await this.close()
     }
-
-    await this.launch()
-
+    if (this.status === 'closed') {
+      await this.launch()
+    }
     return this
   }
 
   /**
-   * 链接浏览器实例
+   * 获取连接
    *
-   * @returns {Promise<*>}
+   * @returns {!Promise<!Puppeteer.Browser>}
    */
-  async connection () {
-    const browser = await puppeteer.connect({
-      browserWSEndpoint: this.wsEndpoint
-    })
-
-    await this.registerEventBindings(browser)
-
-    return browser
+  async getConnection () {
+    if (!this.connection) {
+      this.connection = await puppeteer.connect({
+        browserWSEndpoint: this.wsEndpoint
+      })
+    }
+    return this.connection
   }
 
   /**
-   * 关闭浏览器
+   * 断开连接
    *
-   * @returns {Promise<boolean>}
+   * @returns {Promise<*>}
    */
-  async close () {
-    if (this.wsEndpoint) {
-      const browser = await this.connection()
-
-      await browser.close()
-
-      this.wsEndpoint = null
-    }
-
+  async disconnect () {
+    if (!this.connection) return false
+    await this.connection.disconnect()
+    this.pages = []
+    this.connection = null
     return true
   }
 
-  async registerEventBindings (browser) {
-    await browser.on('targetcreated', async (target) => {
-      const page = await target.page()
-      if (page) {
-        await this.registerPageEventBindings(await target.page())
-      }
-    })
+  /**
+   * 新建页面
+   *
+   * @returns {Promise<Page>}
+   */
+  async newPage () {
+    const page = new Page(
+      await (await this.getConnection()).newPage(), this
+    )
+    this.pages.push(page)
+    return page
   }
 
-  async registerPageEventBindings (page) {
-    await page.on('domcontentloaded', async () => {
-      if (this.config.stealth) {
-        await setupPageStealth(page)
-      }
-    })
+  /**
+   * 重置页面列表
+   */
+  resetPages () {
+    return this.pages = this.pages.filter(page => (
+      !['closeing', 'closed'].includes(page.status)
+    ))
   }
 
-  async getRandomPage () {
-    const browser = await this.connection()
-
-    return (await browser.pages())[0]
+  /**
+   * 获取随机页面
+   *
+   * @returns {Page}
+   */
+  getRandomPage () {
+    const pages = this.pages.filter(page => page.status === 'normal')
+    return pages[~~(Math.random() * 10) % pages.length]
   }
 }
