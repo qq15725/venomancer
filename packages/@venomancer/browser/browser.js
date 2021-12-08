@@ -21,35 +21,13 @@ function getConfig (type) {
 
 module.exports = class Browser {
   /**
-   * 配置
-   */
-  config = {}
-
-  /**
-   * 状态
-   */
-  status = 'closed'
-
-  /**
-   * ws endpoint
-   */
-  wsEndpoint = null
-
-  /**
-   * 页面列表
-   */
-  pages = []
-
-  /**
-   *
-   * @type {null|!Puppeteer.Browser}
-   */
-  connection = null
-
-  /**
    * @param options
    */
   constructor (options = {}) {
+    this.status = 'closed'
+    this.wsEndpoint = null
+    this.pages = []
+    this.connection = null
     this.config = mergeDeep(getConfig(options.type), options)
     if (this.config.relaunchInterval) {
       setInterval(

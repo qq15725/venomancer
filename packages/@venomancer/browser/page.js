@@ -3,22 +3,8 @@
 const { setupPageStealth } = require('./page/crawl')
 
 module.exports = class Page {
-  /**
-   * 浏览器
-   */
-  browser
-
-  /**
-   * 页面连接
-   */
-  connection
-
-  /**
-   * 状态
-   */
-  status = 'normal'
-
   constructor (connection, browser) {
+    this.status = 'normal'
     this.browser = browser
     this.connection = connection
     this.registerEventBindings()
